@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Zadania JavaScript – Obiekty</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .produkt {
+      border: 1px solid black;
+      padding: 10px;
+      margin: 5px;
+      width: 250px;
+    }
+    button {
+      margin-right: 5px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Zadania JavaScript – Obiekty</h1>
+
+<h2>POZIOM 3 – Produkty (DOM)</h2>
+<div id="produkty"></div>
+
+<script>
+
+// poz1
+
+const ksiazka = {
+  tytul: "Władca Pierścieni",
+  autor: "J.R.R. Tolkien",
+  rokWydania: 1954
+};
+
+
+console.log("=== POZIOM 1 ===");
+for (let key in ksiazka) {
+  console.log(key + ":", ksiazka[key]);
+}
+
+
+ksiazka.opis = function() {
+  return `Tytuł: ${this.tytul}, Autor: ${this.autor}`;
+};
+
+console.log(ksiazka.opis());
+
+
+ksiazka.rokWydania = 1955;
+console.log("Nowy rok wydania:", ksiazka.rokWydania);
+
+console.log("Czy posiada właściwość wydawnictwo:", ksiazka.hasOwnProperty("wydawnictwo"));
+console.log("Ilość właściwości:", Object.keys(ksiazka).length);
+
+
+const produkty = [
+  { nazwa: "Laptop", cena: 4000 },
+  { nazwa: "Telefon", cena: 2500 },
+  { nazwa: "Monitor", cena: 1200 }
+];
+
+produkty.forEach(p => console.log("Produkt:", p.nazwa));
+
+
+// poz2
+
+console.log("=== POZIOM 2 – KONSTRUKTOR ===");
+
+function Uczen(imie, nazwisko, klasa) {
+  this.imie = imie;
+  this.nazwisko = nazwisko;
+  this.klasa = klasa;
+
+  this.przedstawSie = function() {
+    console.log(`Nazywam się ${this.imie} ${this.nazwisko} i chodzę do klasy ${this.klasa}`);
+  };
+
+  this.inicjaly = function() {
+    return this.imie[0] + this.nazwisko[0];
+  };
+}
+
+const uczen1 = new Uczen("Jan", "Kowalski", "3A");
+const uczen2 = new Uczen("Anna", "Nowak", "2B");
+const uczen3 = new Uczen("Piotr", "Wiśniewski", "1C");
+
+uczen1.przedstawSie();
+console.log("Inicjały:", uczen1.inicjaly());
+
+
+// poz2class
+
+console.log("=== POZIOM 2 – CLASS ===");
+
+class UczenClass {
+  constructor(imie, nazwisko, klasa) {
+    this.imie = imie;
+    this.nazwisko = nazwisko;
+    this.klasa = klasa;
+  }
+
+  przedstawSie() {
+    console.log(`Nazywam się ${this.imie} ${this.nazwisko} i chodzę do klasy ${this.klasa}`);
+  }
+
+  inicjaly() {
+    return this.imie[0] + this.nazwisko[0];
+  }
+}
+
+const u1 = new UczenClass("Marta", "Zielińska", "4A");
+u1.przedstawSie();
+console.log("Inicjały:", u1.inicjaly());
+
+
+// poz3
+
+class Produkt {
+  constructor(nazwa, cena) {
+    this.nazwa = nazwa;
+    this.cena = cena;
+  }
+
+  render() {
+    const div = document.createElement("div");
+    div.classList.add("produkt");
+
+    const info = document.createElement("p");
+    info.textContent = `${this.nazwa} - ${this.cena} zł`;
+
+    const btnUsun = document.createElement("button");
+    btnUsun.textContent = "Usuń";
+    btnUsun.onclick = () => div.remove();
+
+    const btnPromocja = document.createElement("button");
+    btnPromocja.textContent = "Promocja -20%";
+    btnPromocja.onclick = () => {
+      this.cena = this.cena * 0.8;
+      info.textContent = `${this.nazwa} - ${this.cena.toFixed(2)} zł`;
+    };
+
+    div.appendChild(info);
+    div.appendChild(btnUsun);
+    div.appendChild(btnPromocja);
+
+    document.getElementById("produkty").appendChild(div);
+  }
+}
+
+const listaProduktow = [
+  new Produkt("Laptop", 4000),
+  new Produkt("Telefon", 2500),
+  new Produkt("Monitor", 1200),
+  new Produkt("Klawiatura", 300)
+];
+
+listaProduktow.forEach(p => p.render());
+
+
+// poz4
+
+console.log("=== POZIOM 4 ===");
+
+class Osoba {
+  constructor(imie, wiek) {
+    this.imie = imie;
+    this._wiek = wiek;
+  }
+
+  przywitaj() {
+    console.log(`Cześć, jestem ${this.imie}`);
+  }
+
+  get wiek() {
+    return this._wiek;
+  }
+
+  set wiek(value) {
+    if (value < 0) {
+      console.error("Wiek nie może być mniejszy niż 0!");
+    } else {
+      this._wiek = value;
+    }
+  }
+}
+
+class Nauczyciel extends Osoba {
+  #pensja;
+
+  constructor(imie, wiek, przedmiot, pensja) {
+    super(imie, wiek);
+    this.przedmiot = przedmiot;
+    this.#pensja = pensja;
+  }
+
+  przywitaj() {
+    console.log(`Dzień dobry, jestem nauczycielem ${this.przedmiot} i nazywam się ${this.imie}`);
+  }
+
+  ucz() {
+    console.log(`Uczę przedmiotu: ${this.przedmiot}`);
+  }
+
+  getPensja() {
+    return this.#pensja;
+  }
+}
+
+const nauczyciel = new Nauczyciel("Adam", 35, "Matematyka", 5000);
+
+nauczyciel.przywitaj();
+nauczyciel.ucz();
+console.log("Pensja:", nauczyciel.getPensja());
+
+nauczyciel.wiek = -5; 
+nauczyciel.wiek = 40;
+console.log("Nowy wiek:", nauczyciel.wiek);
+
+</script>
+
+</body>
+</html>
